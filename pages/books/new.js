@@ -73,6 +73,7 @@ export default function NewBook() {
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter book title"
+                  style={{ color: '#1a202c' }}
                 />
               </div>
               
@@ -86,6 +87,7 @@ export default function NewBook() {
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter author name"
+                  style={{ color: '#1a202c' }}
                 />
               </div>
               
@@ -99,6 +101,7 @@ export default function NewBook() {
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter ISBN number"
+                  style={{ color: '#1a202c' }}
                 />
               </div>
               
@@ -109,6 +112,7 @@ export default function NewBook() {
                   value={formData.status}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  style={{ color: '#1a202c' }}
                 >
                   <option value="Available">📗 Available</option>
                   <option value="Borrowed">📙 Borrowed</option>
@@ -126,6 +130,7 @@ export default function NewBook() {
                 rows="4"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="Enter book description (optional)"
+                style={{ color: '#1a202c' }}
               />
             </div>
             

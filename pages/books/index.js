@@ -1,10 +1,19 @@
-import { useState, useEffect } from 'react';
+//pages/books/index.js
+import { useState, useEffect } from 'react'; // Added missing imports
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function BooksList() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const router = useRouter();
+
+  // Helper function to get API base URL
+  const getApiUrl = (path = '') => {
+
+    return `/api${path}`;
+};
 
   useEffect(() => {
     fetchBooks();
@@ -12,10 +21,23 @@ export default function BooksList() {
 
   const fetchBooks = async () => {
     try {
-      const res = await fetch('/api/books');
+      const apiUrl = getApiUrl('/books');
+      console.log('Fetching from:', apiUrl); // Debug log
+      
+      const res = await fetch(apiUrl);
+      console.log('Response status:', res.status); // Debug log
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
       const data = await res.json();
+      console.log('Received data:', data); // Debug log
+      
       if (data.success) {
         setBooks(data.data);
+      } else {
+        console.error('API returned error:', data.error);
       }
     } catch (error) {
       console.error('Error fetching books:', error);
@@ -28,9 +50,13 @@ export default function BooksList() {
     if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
     
     try {
-      const res = await fetch(`/api/books/${id}`, { method: 'DELETE' });
+      const apiUrl = getApiUrl(`/books/${id}`);
+      const res = await fetch(apiUrl, { method: 'DELETE' });
+      
       if (res.ok) {
-        fetchBooks();
+        fetchBooks(); // Refresh the list
+      } else {
+        console.error('Delete failed with status:', res.status);
       }
     } catch (error) {
       console.error('Error deleting book:', error);
@@ -38,9 +64,9 @@ export default function BooksList() {
   };
 
   const filteredBooks = books.filter(book =>
-    book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    book.isbn.includes(searchTerm)
+    book.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    book.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    book.isbn?.includes(searchTerm)
   );
 
   const getStatusColor = (status) => {
@@ -95,7 +121,6 @@ export default function BooksList() {
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
                 <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                  <span className="text-gray-400">🔍</span>
                 </div>
               </div>
             </div>
