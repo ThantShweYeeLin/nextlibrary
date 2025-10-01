@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { apiFetch, handleApiResponse, getPageUrl } from '../../../lib/api-utils';
 
 // Add the BookForm component here
 function BookForm({ book = {}, isEdit = false }) {
@@ -25,24 +26,19 @@ function BookForm({ book = {}, isEdit = false }) {
     setLoading(true);
     
     try {
-      const url = isEdit ? `/api/books/${book._id}` : '/api/books';
+      const apiPath = isEdit ? `/books/${book._id}` : '/books';
       const method = isEdit ? 'PUT' : 'POST';
       
-      const res = await fetch(url, {
+      const response = await apiFetch(apiPath, {
         method,
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
-        router.push('/books');
-      } else {
-        const error = await res.json();
-        alert(error.error || 'Something went wrong');
-      }
+      await handleApiResponse(response);
+      router.push(getPageUrl('/books'));
     } catch (error) {
       console.error('Error:', error);
-      alert('Error saving book');
+      alert(error.message || 'Error saving book');
     } finally {
       setLoading(false);
     }
@@ -54,7 +50,7 @@ function BookForm({ book = {}, isEdit = false }) {
         {/* Header */}
         <div className="text-center mb-8">
           <button 
-            onClick={() => router.push('/books')} 
+            onClick={() => router.push(getPageUrl('/books'))} 
             className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4"
           >
             <span>←</span> Back to Library
@@ -172,7 +168,7 @@ function BookForm({ book = {}, isEdit = false }) {
               
               <button
                 type="button"
-                onClick={() => router.push('/books')}
+                onClick={() => router.push(getPageUrl('/books'))}
                 className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-xl font-semibold transition-colors"
               >
                 Cancel
@@ -195,17 +191,17 @@ export default function EditBook() {
     if (id) {
       fetchBook();
     }
-  }, [id]);
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchBook = async () => {
     try {
-      const res = await fetch(`/api/books/${id}`);
-      const data = await res.json();
-      if (data.success) {
-        setBook(data.data);
-      }
+      const response = await apiFetch(`/books/${id}`);
+      const data = await handleApiResponse(response);
+      setBook(data.data);
     } catch (error) {
       console.error('Error fetching book:', error);
+      alert('Failed to load book data');
+      router.push(getPageUrl('/books'));
     } finally {
       setLoading(false);
     }
@@ -228,7 +224,7 @@ export default function EditBook() {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Book Not Found</h2>
           <button 
-            onClick={() => router.push('/books')}
+            onClick={() => router.push(getPageUrl('/books'))}
             className="bg-blue-600 text-white px-6 py-3 rounded-xl"
           >
             Back to Library

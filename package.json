@@ -7,9 +7,13 @@
     "build": "next build",
     "start": "next start",
     "build:prod": "NODE_ENV=production next build",
-    "start:prod": "NODE_ENV=production next start -p 3003"
+    "start:prod": "NODE_ENV=production next start -p 3003",
+    "build:vm": "NEXT_PUBLIC_BASE_PATH=/booklib NEXT_PUBLIC_ASSET_PREFIX=/booklib next build",
+    "start:vm": "NEXT_PUBLIC_BASE_PATH=/booklib NEXT_PUBLIC_ASSET_PREFIX=/booklib next start -p 3003",
+    "export": "next build && next export"
   },
   "dependencies": {
+    "mongodb": "^6.20.0",
     "mongoose": "^7.8.7",
     "mongoose-unique-validator": "^4.0.1",
     "next": "15.5.4",

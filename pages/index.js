@@ -1,12 +1,13 @@
 // pages/index.js
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { getPageUrl } from '../lib/api-utils';
 
 export default function Home() {
   const router = useRouter();
   
   useEffect(() => {
-    router.push('/books');
+    router.push(getPageUrl('/books'));
   }, [router]);
 
   return (

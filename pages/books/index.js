@@ -1,7 +1,8 @@
 //pages/books/index.js
-import { useState, useEffect } from 'react'; // Added missing imports
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { apiFetch, handleApiResponse, getPageUrl } from '../../lib/api-utils';
 
 export default function BooksList() {
   const [books, setBooks] = useState([]);
@@ -9,36 +10,15 @@ export default function BooksList() {
   const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
 
-  // Helper function to get API base URL
-  const getApiUrl = (path = '') => {
-
-    return `/api${path}`;
-};
-
   useEffect(() => {
     fetchBooks();
   }, []);
 
   const fetchBooks = async () => {
     try {
-      const apiUrl = getApiUrl('/books');
-      console.log('Fetching from:', apiUrl); // Debug log
-      
-      const res = await fetch(apiUrl);
-      console.log('Response status:', res.status); // Debug log
-      
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      
-      const data = await res.json();
-      console.log('Received data:', data); // Debug log
-      
-      if (data.success) {
-        setBooks(data.data);
-      } else {
-        console.error('API returned error:', data.error);
-      }
+      const response = await apiFetch('/books');
+      const data = await handleApiResponse(response);
+      setBooks(data.data);
     } catch (error) {
       console.error('Error fetching books:', error);
     } finally {
@@ -50,16 +30,12 @@ export default function BooksList() {
     if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
     
     try {
-      const apiUrl = getApiUrl(`/books/${id}`);
-      const res = await fetch(apiUrl, { method: 'DELETE' });
-      
-      if (res.ok) {
-        fetchBooks(); // Refresh the list
-      } else {
-        console.error('Delete failed with status:', res.status);
-      }
+      const response = await apiFetch(`/books/${id}`, { method: 'DELETE' });
+      await handleApiResponse(response);
+      fetchBooks(); // Refresh the list
     } catch (error) {
       console.error('Error deleting book:', error);
+      alert('Failed to delete book. Please try again.');
     }
   };
 
@@ -126,7 +102,7 @@ export default function BooksList() {
             </div>
 
             <Link 
-              href="/books/new"
+              href={getPageUrl("/books/new")}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 flex items-center gap-2"
             >
               <span>+</span>
@@ -150,7 +126,7 @@ export default function BooksList() {
             </p>
             {!searchTerm && (
               <Link 
-                href="/books/new"
+                href={getPageUrl("/books/new")}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold inline-block transition-colors"
               >
                 Add Your First Book
@@ -191,7 +167,7 @@ export default function BooksList() {
                     </span>
                     <div className="flex gap-2">
                       <Link 
-                        href={`/books/${book._id}/edit`}
+                        href={getPageUrl(`/books/${book._id}/edit`)}
                         className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
                       >
                         <span>✏️</span>

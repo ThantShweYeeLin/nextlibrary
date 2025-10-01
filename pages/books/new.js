@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { apiFetch, handleApiResponse, getPageUrl } from '../../lib/api-utils';
 
 export default function NewBook() {
   const router = useRouter();
@@ -24,21 +25,16 @@ export default function NewBook() {
     setLoading(true);
     
     try {
-      const res = await fetch('/api/books', {
+      const response = await apiFetch('/books', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
-        router.push('/books');
-      } else {
-        const error = await res.json();
-        alert(error.error || 'Something went wrong');
-      }
+      await handleApiResponse(response);
+      router.push(getPageUrl('/books'));
     } catch (error) {
       console.error('Error:', error);
-      alert('Error creating book');
+      alert(error.message || 'Error creating book');
     } finally {
       setLoading(false);
     }
@@ -50,7 +46,7 @@ export default function NewBook() {
         {/* Header */}
         <div className="text-center mb-8">
           <button 
-            onClick={() => router.push('/books')} 
+            onClick={() => router.push(getPageUrl('/books'))} 
             className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4"
           >
             <span>←</span> Back to Library
@@ -155,7 +151,7 @@ export default function NewBook() {
               
               <button
                 type="button"
-                onClick={() => router.push('/books')}
+                onClick={() => router.push(getPageUrl('/books'))}
                 className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-xl font-semibold transition-colors"
               >
                 Cancel
