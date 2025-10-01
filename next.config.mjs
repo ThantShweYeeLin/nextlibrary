@@ -4,7 +4,7 @@ const nextConfig = {
   
   // Configure for VM deployment with subpath
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
-  assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX || '',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
   
   // Trailing slash for better compatibility
   trailingSlash: true,
@@ -20,24 +20,11 @@ const nextConfig = {
   },
   
   // Output configuration for static export if needed
-  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
+  output: 'standalone',
   
   // Image optimization settings for VM deployment
   images: {
     unoptimized: true,
-  },
-  
-  // API route configuration
-  async rewrites() {
-    return {
-      beforeFiles: [
-        // Handle API routes properly with base path
-        {
-          source: '/api/:path*',
-          destination: '/api/:path*',
-        },
-      ],
-    };
   },
 }
 

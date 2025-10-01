@@ -8,8 +8,8 @@
     "start": "next start",
     "build:prod": "NODE_ENV=production next build",
     "start:prod": "NODE_ENV=production next start -p 3003",
-    "build:vm": "NEXT_PUBLIC_BASE_PATH=/booklib NEXT_PUBLIC_ASSET_PREFIX=/booklib next build",
-    "start:vm": "NEXT_PUBLIC_BASE_PATH=/booklib NEXT_PUBLIC_ASSET_PREFIX=/booklib next start -p 3003",
+    "build:vm": "NEXT_PUBLIC_BASE_PATH=/booklib next build",
+    "start:vm": "NEXT_PUBLIC_BASE_PATH=/booklib next start -p 3003",
     "export": "next build && next export"
   },
   "dependencies": {
